@@ -3,6 +3,7 @@ package com.jetpack.compose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -25,16 +26,21 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun MyApp() {
+private fun MyApp(names: List<String> = listOf("World", "Compose")) {
     Surface(color = MaterialTheme.colors.background) {
-        Greeting("Android")
+        names.forEach { name ->
+            Greeting(name)
+        }
     }
 }
 
 @Composable
 fun Greeting(name: String) {
     Surface(color = MaterialTheme.colors.primary) {
-        Text(text = "Hello $name!", modifier = Modifier.padding(24.dp))
+        Column(modifier = Modifier.padding(24.dp)) {
+            Text(text = "Hello,")
+            Text(text = name)
+        }
     }
 }
 
