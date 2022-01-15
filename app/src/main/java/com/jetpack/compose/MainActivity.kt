@@ -24,7 +24,19 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun MyApp(names: List<String> = listOf("World", "Compose")) {
+fun MyApp() {
+
+    var shouldShowOnboarding by remember { mutableStateOf(true) }
+
+    if (shouldShowOnboarding) {
+        OnboardingScreen(onContinueClicked = { shouldShowOnboarding = false })
+    } else {
+        Greetings()
+    }
+}
+
+@Composable
+private fun Greetings(names: List<String> = listOf("World", "Compose")) {
     Surface(color = MaterialTheme.colors.background) {
         Column(modifier = Modifier.padding(vertical = 4.dp)) {
             names.forEach { name ->
@@ -72,5 +84,32 @@ fun Greeting(name: String) {
 fun DefaultPreview() {
     JetpackComposeBasicsTheme {
         Greeting("Android")
+    }
+}
+
+@Composable
+fun OnboardingScreen(onContinueClicked: () -> Unit) {
+    Surface {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Welcome to the Basics Codelab!")
+            Button(
+                modifier = Modifier.padding(vertical = 24.dp),
+                onClick = onContinueClicked
+            ) {
+                Text("Continue")
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 320, heightDp = 320)
+@Composable
+fun OnboardingPreview() {
+    JetpackComposeBasicsTheme {
+        OnboardingScreen(onContinueClicked = { /* do nothing */ })
     }
 }
