@@ -3,6 +3,9 @@ package com.jetpack.compose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,7 +42,7 @@ fun MyApp() {
 }
 
 @Composable
-private fun Greetings(names: List<String> = List(1000) { "$it" } ) {
+private fun Greetings(names: List<String> = List(1000) { "$it" }) {
     LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
         items(items = names) { name ->
             Greeting(name = name)
@@ -50,11 +53,17 @@ private fun Greetings(names: List<String> = List(1000) { "$it" } ) {
 @Composable
 fun Greeting(name: String) {
 
-    val expanded = remember {
+    var expanded by remember {
         mutableStateOf(false)
     }
 
-    val extraPadding = if (expanded.value) 48.dp else 0.dp
+    val extraPadding by animateDpAsState(
+        targetValue = if (expanded) 48.dp else 0.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
 
     Surface(
         color = MaterialTheme.colors.primary,
@@ -62,18 +71,21 @@ fun Greeting(name: String) {
     ) {
         Row(
             modifier = Modifier
-                .padding(24.dp)
                 .padding(bottom = extraPadding)
         ) {
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(bottom = extraPadding.coerceAtLeast(0.dp))
+            ) {
                 Text(text = "Hello,")
                 Text(text = name)
             }
             OutlinedButton(
-                onClick = { expanded.value = !expanded.value },
+                onClick = { expanded = !expanded },
                 modifier = Modifier.align(Alignment.CenterVertically)
             ) {
-                val text = if (expanded.value) "Show less" else "Show more"
+                val text = if (expanded) "Show less" else "Show more"
                 Text(text = text)
             }
         }
