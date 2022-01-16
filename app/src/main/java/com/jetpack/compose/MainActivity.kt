@@ -81,6 +81,7 @@ fun Greeting(name: String) {
             Column(
                 modifier = Modifier
                     .weight(1f)
+                    .padding(12.dp)
             ) {
                 Text(text = "Hello,")
                 Text(
